@@ -88,7 +88,7 @@ while True:
 	writer.write(output)
 
 	# show the output image
-	cv2.imshow("Output", output)
+	# cv2.imshow("Output", output)
 	key = cv2.waitKey(1) & 0xFF
 
 	# if the `q` key was pressed, break from the loop
