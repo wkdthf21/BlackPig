@@ -9,39 +9,41 @@ import argparse
 import pickle
 import cv2
 
-class classifer():
-    def __init(self, model_path, label_bin):
-        self.model_path = model_path
-        self.label_bin = label_bin
+class AbuseClassifier():
+    def __init__(self, model_path, lb_path):
+        print ("Loading model and label binarizer...")
+        self.model = load_model(model_path)
+        self.lb = pickle.loads(open(lb_path, "rb").read())
         self.queue_size = 128
 
-        print ("Load label binarizer and model...")
-        self.model = load_model(self.model_path)
-        self.lb = pickle.loads(open(self.label_bin, "rb").read())
-
-        # initialize the image mean for mean subtraction along with the
-        # predictions queue        
+        # initialize the image mean for mean subtraction
+        # along with the predictions queue
         mean = np.array([123.68, 116.779, 103.939][::1], dtype="float32")
-        Q = deque(maxlen=args["size"])
+        Q = deque(maxlen=self.queue_size)
 
-    def isAbuseChild(self, frame):
-        (H, W) = frame.shape[:2]
+    def isAbusedChild(self, video):
+        (W, H) = (None, None)
 
-	frame = cv2.resize(frame, (224, 224)).astype("float32")
-	frame -= mean
+        while True:
+        #while frame in viedo?:
+            (H, W) = frame.shape[:2]
 
-	# make predictions on the frame and then update the predictions
-	# queue
-	preds = model.predict(np.expand_dims(frame, axis=0))[0]
-	Q.append(preds)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.resize(frame, (224, 244)).astype("float32")
+            frame -= mean
 
-	# perform prediction averaging over the current history of
-	# previous predictions
-	results = np.array(Q).mean(axis=0)
-	i = np.argmax(results)
-	label = lb.classes_[i]
+            preds = model.predict(np.expand_dims(frame, axis=0))[0]
+            Q.append(preds)
 
-	if max(results) > 0.9:
-            return True
-        else:
-            return False
+
+# 여기서부터 Tab 씀
+	    # perform prediction averaging over the current history of
+	    # previous predictions
+	    results = np.array(Q).mean(axis=0)
+	    i = np.argmax(results)
+	    label = lb.classes_[i]
+
+            if max(results) > 0.9:
+                return True
+            else:
+                return False
