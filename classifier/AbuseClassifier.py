@@ -9,6 +9,11 @@ import argparse
 import pickle
 import cv2
 
+abused_time_dict = dict()
+time_list = list()
+time_order = 0
+time_switch = 0
+
 class AbuseClassifier():
     def __init__(self, model_path, lb_path):
         print ("Loading model and label binarizer...")
@@ -39,11 +44,21 @@ class AbuseClassifier():
 # 여기서부터 Tab 씀
 	    # perform prediction averaging over the current history of
 	    # previous predictions
-	    results = np.array(Q).mean(axis=0)
-	    i = np.argmax(results)
-	    label = lb.classes_[i]
+            results = np.array(Q).mean(axis=0)
+            i = np.argmax(results)
+            label = lb.classes_[i]
 
-            if max(results) > 0.9:
-                return True
-            else:
-                return False
+            if max(results) > 0.9 and time_switch == 0:
+                timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
+                time_list.append(timestamps)
+                time_order += 1
+                time_switch = 1
+
+            elif max(result) < 0.9 and time_switch == 1:
+                timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
+                time_list.append(timestamps)
+                abused_time_dict[time_order] = time_list
+                del time_list[:]
+                time_switch = 0
+
+        return abused_time_dict
