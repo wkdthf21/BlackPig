@@ -41,7 +41,7 @@ class AbuseClassifier():
             (H, W) = frame.shape[:2]
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame = cv2.resize(frame, (224, 244)).astype("float32")
+            frame = cv2.resize(frame, (224, 224)).astype("float32")
             frame -= self.mean
 
             preds = self.model.predict(np.expand_dims(frame, axis=0))[0]
