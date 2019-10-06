@@ -53,7 +53,7 @@ class AbuseClassifier():
 	    # previous predictions
             results = np.array(self.Q).mean(axis=0)
             i = np.argmax(results)
-            label = lb.classes_[i]
+            label = self.lb.classes_[i]
 
             if max(results) > 0.9 and time_switch == 0 and label == "punch":
                 timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
