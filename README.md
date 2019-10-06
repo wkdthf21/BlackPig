@@ -1,5 +1,9 @@
 <h2>2019 Open SW Child Abused Recognition CCTV</h2>
 
+<h4> 0. Prepare </h4>
+ 1) make "model" directory
+ 2) put model files and lb files in model directory
+
 <h4> 1. Import </h4>
 <pre>
 from classifier.AbuseClassifier import AbuseClassifier
