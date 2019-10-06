@@ -71,7 +71,7 @@ class AbuseClassifier():
                 time_switch = 1
 
                 # For debug
-                text = label + " || " + max(results)
+                text = label + " || " + str(max(results))
                 cv2.putText(output, text, (35, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.25, (0, 255, 0), 5)
 
                 if writer is None:
