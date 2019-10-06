@@ -73,12 +73,6 @@ class AbuseClassifier():
                 # For debug
                 text = label + " || " + str(max(results))
                 cv2.putText(output, text, (35, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.25, (0, 255, 0), 5)
-
-                if writer is None:
-                    fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-                    writer = cv2.VideoWriter('output/test.avi', fourcc, 30, (W,H), True)
-
-                writer.write(output)
                 # End Debug
 
             elif max(results) < 0.9 and time_switch == 1:
@@ -92,7 +86,14 @@ class AbuseClassifier():
                 threshold = 0
                 del self.time_list[:]
 
-        # for debug
+            # for debug
+            if writer is None:
+                fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+                writer = cv2.VideoWriter('output/test.avi', fourcc, 30, (W,H), True)
+
+            writer.write(output)
+
         writer.release()
+        #end debug
 
         return self.abused_time_dict
