@@ -62,7 +62,7 @@ class AbuseClassifier():
                 time_switch = 1
                 threshold += 1
 
-            elif max(result) < 0.9 and time_switch == 1:
+            elif max(results) < 0.9 and time_switch == 1:
                 if threshold > 30:
                     timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
                     time_list.append(timestamps)
