@@ -44,7 +44,7 @@ class AbuseClassifier():
             frame = cv2.resize(frame, (224, 244)).astype("float32")
             frame -= self.mean
 
-            preds = model.predict(np.expand_dims(frame, axis=0))[0]
+            preds = self.model.predict(np.expand_dims(frame, axis=0))[0]
             self.Q.append(preds)
 
 
