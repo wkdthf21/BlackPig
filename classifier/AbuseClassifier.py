@@ -26,11 +26,18 @@ class AbuseClassifier():
         mean = np.array([123.68, 116.779, 103.939][::1], dtype="float32")
         Q = deque(maxlen=self.queue_size)
 
-    def isAbusedChild(self, video):
+        threshold = 0
+
+    def isAbusedChild(self, video_path):
+        video = cv2.VideoCapture(video_path)
         (W, H) = (None, None)
 
         while True:
-        #while frame in viedo?:
+            (grabbed, frame) = video.read()
+
+            if not grabbed:
+                break
+
             (H, W) = frame.shape[:2]
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -53,12 +60,16 @@ class AbuseClassifier():
                 time_list.append(timestamps)
                 time_order += 1
                 time_switch = 1
+                threshold += 1
 
             elif max(result) < 0.9 and time_switch == 1:
-                timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
-                time_list.append(timestamps)
-                abused_time_dict[time_order] = time_list
-                del time_list[:]
-                time_switch = 0
+                if threshold > 30:
+                    timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
+                    time_list.append(timestamps)
+                    abused_time_dict[time_order] = time_list
+                    del time_list[:]
+                    time_switch = 0
+                    
+                threshold = 0
 
         return abused_time_dict
