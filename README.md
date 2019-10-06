@@ -1,4 +1,4 @@
-<h2>2019 Open SW Í∞úÎ∞ú???Ä??- ?ôÎ? Í∞êÏ? CCTV</h2>
+<h2>2019 Open SW Child Abused Recognition CCTV</h2>
 
 <h4> 1. Import </h4>
 '''python
