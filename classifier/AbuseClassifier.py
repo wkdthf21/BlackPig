@@ -23,8 +23,8 @@ class AbuseClassifier():
 
         # initialize the image mean for mean subtraction
         # along with the predictions queue
-        mean = np.array([123.68, 116.779, 103.939][::1], dtype="float32")
-        Q = deque(maxlen=self.queue_size)
+        self.mean = np.array([123.68, 116.779, 103.939][::1], dtype="float32")
+        self.Q = deque(maxlen=self.queue_size)
 
         threshold = 0
 
@@ -42,16 +42,16 @@ class AbuseClassifier():
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame = cv2.resize(frame, (224, 244)).astype("float32")
-            frame -= mean
+            frame -= self.mean
 
             preds = model.predict(np.expand_dims(frame, axis=0))[0]
-            Q.append(preds)
+            self.Q.append(preds)
 
 
 # 여기서부터 Tab 씀
 	    # perform prediction averaging over the current history of
 	    # previous predictions
-            results = np.array(Q).mean(axis=0)
+            results = np.array(self.Q).mean(axis=0)
             i = np.argmax(results)
             label = lb.classes_[i]
 
