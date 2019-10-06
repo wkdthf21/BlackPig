@@ -9,17 +9,14 @@ import argparse
 import pickle
 import cv2
 
-abused_time_dict = dict()
-time_list = list()
-time_order = 0
-time_switch = 0
-
 class AbuseClassifier():
     def __init__(self, model_path, lb_path):
         print ("Loading model and label binarizer...")
         self.model = load_model(model_path)
         self.lb = pickle.loads(open(lb_path, "rb").read())
         self.queue_size = 128
+        self.abused_time_dict = dict()
+        self.time_list = list()
 
         # initialize the image mean for mean subtraction
         # along with the predictions queue
@@ -30,6 +27,9 @@ class AbuseClassifier():
 
     def isAbusedChild(self, video_path):
         video = cv2.VideoCapture(video_path)
+        time_order = 0
+        time_switch = 0
+
         (W, H) = (None, None)
 
         while True:
@@ -48,7 +48,6 @@ class AbuseClassifier():
             self.Q.append(preds)
 
 
-# 여기서부터 Tab 씀
 	    # perform prediction averaging over the current history of
 	    # previous predictions
             results = np.array(self.Q).mean(axis=0)
@@ -57,7 +56,7 @@ class AbuseClassifier():
 
             if max(results) > 0.9 and time_switch == 0 and label == "punch":
                 timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
-                time_list.append(timestamps)
+                self.time_list.append(timestamps)
                 time_order += 1
                 time_switch = 1
                 threshold += 1
@@ -65,11 +64,11 @@ class AbuseClassifier():
             elif max(results) < 0.9 and time_switch == 1:
                 if threshold > 30:
                     timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
-                    time_list.append(timestamps)
-                    abused_time_dict[time_order] = time_list
-                    del time_list[:]
+                    self.time_list.append(timestamps)
+                    self.abused_time_dict[time_order] = self.time_list
+                    del self.time_list[:]
                     time_switch = 0
                     
                 threshold = 0
 
-        return abused_time_dict
+        return self.abused_time_dict
