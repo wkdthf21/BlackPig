@@ -54,20 +54,22 @@ class AbuseClassifier():
             i = np.argmax(results)
             label = self.lb.classes_[i]
 
+            if time_switch == 1:
+                threshold += 1
+
             if max(results) > 0.9 and time_switch == 0:
                 timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
-                print (label, " || ", timestamps)
+                print ("start || ", label, " || ", timestamps)
                 self.time_list.append(timestamps)
                 time_order += 1
                 time_switch = 1
-                threshold += 1
 
             elif max(results) < 0.9 and time_switch == 1:
                 if threshold >= 0:
                     timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
                     self.time_list.append(timestamps)
                     self.abused_time_dict[time_order] = self.time_list
-                    print ("threshold =", threshold)
+                    print ("end || ", threshold, " || ", timestamps)
                     del self.time_list[:]
                     time_switch = 0
                     
