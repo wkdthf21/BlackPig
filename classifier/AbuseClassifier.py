@@ -66,11 +66,9 @@ class AbuseClassifier():
                 # For debug
                 #text = label + " || " + str(max(results))
                 #cv2.putText(output, text, (35, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.25, (0, 255, 0), 5)
-                # End Debug
-                
+                # End Debug  
 
-
-            if max(results) > 0.9 and time_switch == 0:
+            if max(results) > 0.9 and time_switch == 0 and label == "abuse":
                 timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
                 print ("start || ", label, " || ", timestamps)
                 self.time_list.append(timestamps)
