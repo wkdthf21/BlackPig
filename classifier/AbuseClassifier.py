@@ -65,14 +65,14 @@ class AbuseClassifier():
                 time_switch = 1
 
             elif max(results) < 0.9 and time_switch == 1:
-                if threshold >= 0:
+                if threshold > 20:
                     timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
                     self.time_list.append(timestamps)
                     self.abused_time_dict[time_order] = self.time_list[:]
                     print ("end || ", threshold, " || ", timestamps)
-                    del self.time_list[:]
-                    time_switch = 0
-                    
+
+                time_switch = 0
                 threshold = 0
+                del self.time_list[:]
 
         return self.abused_time_dict
