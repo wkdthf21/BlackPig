@@ -54,8 +54,9 @@ class AbuseClassifier():
             i = np.argmax(results)
             label = self.lb.classes_[i]
 
-            if max(results) > 0.9 and time_switch == 0 and label == "punch":
+            if max(results) > 0.9 and time_switch == 0:
                 timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
+                print (label, " || ", timestamps)
                 self.time_list.append(timestamps)
                 time_order += 1
                 time_switch = 1
