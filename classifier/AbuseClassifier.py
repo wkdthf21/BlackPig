@@ -68,13 +68,13 @@ class AbuseClassifier():
                 #cv2.putText(output, text, (35, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.25, (0, 255, 0), 5)
                 # End Debug  
 
-            if max(results) > 0.9 and time_switch == 0 and label == "abuse":
+            if max(results) > 0.7 and time_switch == 0 and label == "abuse":
                 timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
                 self.time_list.append(timestamps)
                 time_order += 1
                 time_switch = 1 
 
-            elif max(results) < 0.9 and time_switch == 1:
+            elif max(results) < 0.7 and time_switch == 1:
                 if threshold > 20:
                     timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
                     self.time_list.append(timestamps)

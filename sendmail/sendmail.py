@@ -2,6 +2,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 def send_warning(gmail_ID, PW, to_email, times):
+    if len(times) == 0:
+        return False
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
     s.login(gmail_ID, PW)
