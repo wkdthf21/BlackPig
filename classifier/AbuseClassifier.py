@@ -32,6 +32,9 @@ class AbuseClassifier():
 
         (W, H) = (None, None)
 
+        # For debug
+        writer = None
+
         while True:
             (grabbed, frame) = video.read()
 
@@ -39,6 +42,9 @@ class AbuseClassifier():
                 break
 
             (H, W) = frame.shape[:2]
+
+            # For debug
+            output = frame.copy()
 
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame = cv2.resize(frame, (224, 224)).astype("float32")
@@ -64,6 +70,17 @@ class AbuseClassifier():
                 time_order += 1
                 time_switch = 1
 
+                # For debug
+                text = label + " || " + max(result)
+                cv2.putText(output, text, (35, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.25, (0, 255, 0), 5)
+
+                if writer is None:
+                    fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+                    writer = cv2.VideoWriter('output/test.avi', fourcc, 30, (W,H), True)
+
+                writer.write(output)
+                # End Debug
+
             elif max(results) < 0.9 and time_switch == 1:
                 if threshold > 20:
                     timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
@@ -74,5 +91,8 @@ class AbuseClassifier():
                 time_switch = 0
                 threshold = 0
                 del self.time_list[:]
+
+        # for debug
+        writer.release()
 
         return self.abused_time_dict
