@@ -23,12 +23,12 @@ class AbuseClassifier():
         self.mean = np.array([123.68, 116.779, 103.939][::1], dtype="float32")
         self.Q = deque(maxlen=self.queue_size)
 
-        threshold = 0
 
     def isAbusedChild(self, video_path):
         video = cv2.VideoCapture(video_path)
         time_order = 0
         time_switch = 0
+        threshold = 0
 
         (W, H) = (None, None)
 
@@ -67,6 +67,7 @@ class AbuseClassifier():
                     timestamps = video.get(cv2.CAP_PROP_POS_MSEC)
                     self.time_list.append(timestamps)
                     self.abused_time_dict[time_order] = self.time_list
+                    print ("threshold =", threshold)
                     del self.time_list[:]
                     time_switch = 0
                     
